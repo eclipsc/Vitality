@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vitality | Nutrition & SDG 3 Advocacy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color1: #809BCE; --color2: #95B8D1; --color3: #C4D7F2;
+            --color4: #F0F7EE; --color5: #AFDEDC; --color6: #91A8A4; --color7: #86BBD8;
+            --glass: rgba(255, 255, 255, 0.85);
+            --transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--color4);
+            color: #2c3e50;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        /* Smooth Navigation */
+        nav {
+            position: fixed; width: 100%; padding: 20px 50px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--glass); backdrop-filter: blur(15px);
+            z-index: 1000; box-shadow: 0 4px 30px rgba(0,0,0,0.03);
+            transition: var(--transition);
+        }
+        nav .logo { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.6rem; color: var(--color1); text-decoration: none; }
+        nav ul { display: flex; list-style: none; }
+        nav ul li { margin-left: 30px; }
+        nav ul li a { text-decoration: none; color: var(--color6); font-weight: 600; font-size: 0.9rem; letter-spacing: 0.5px; transition: 0.3s; }
+        nav ul li a:hover { color: var(--color1); }
+
+        /* Animation Classes */
+        .reveal { opacity: 0; transform: translateY(50px); transition: var(--transition); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* Hero Section */
+        .hero { 
+            height: 100vh; text-align: center; 
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1490818387583-1baba5e638af?auto=format&fit=crop&w=1920&q=80') center/cover; 
+            display: flex; align-items: center; justify-content: center; color: white;
+        }
+        .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(3rem, 8vw, 5rem); margin-bottom: 20px; text-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .hero p { max-width: 700px; margin: 0 auto 30px; font-weight: 300; font-size: 1.2rem; }
+
+        .credits { 
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 40px; 
+            font-size: 0.85rem; background: rgba(255,255,255,0.1); padding: 20px; border-radius: 50px; backdrop-filter: blur(5px);
+        }
+        .credits span { border-right: 1px solid rgba(255,255,255,0.3); padding-right: 15px; }
+        .credits span:last-child { border: none; }
+
+        /* Section Styling */
+        section { min-height: 100vh; padding: 120px 8%; display: flex; flex-direction: column; justify-content: center; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; margin-top: 50px; }
+        
+        .card {
+            background: white; padding: 50px 40px; border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.03); transition: var(--transition);
+            border: 1px solid #f0f0f0; position: relative; overflow: hidden;
+        }
+        .card::before { content: ''; position: absolute; top:0; left:0; width:100%; height:5px; background: var(--color1); transform: scaleX(0); transition: 0.4s ease; }
+        .card:hover { transform: translateY(-15px); box-shadow: 0 25px 50px rgba(128, 155, 206, 0.15); border-color: var(--color1); }
+        .card:hover::before { transform: scaleX(1); }
+        .card h3 { color: var(--color1); margin-bottom: 20px; font-size: 1.5rem; }
+
+        /* Table Design */
+        .table-container { background: white; border-radius: 30px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.05); margin-top: 40px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 25px; text-align: left; }
+        th { background: var(--color7); color: white; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+        tr:nth-child(even) { background: #fafafa; }
+        .allergy-btn { color: var(--color6); font-size: 0.75rem; text-decoration: underline; cursor: pointer; }
+
+        /* Modal Overhaul */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(44, 62, 80, 0.9); backdrop-filter: blur(10px);
+            display: none; align-items: center; justify-content: center; z-index: 2000;
+        }
+        .modal-content {
+            background: white; padding: 50px; border-radius: 40px; width: 90%; max-width: 850px;
+            max-height: 90vh; overflow-y: auto; position: relative; transform: scale(0.9); opacity: 0; transition: var(--transition);
+        }
+        .modal.active { display: flex; }
+        .modal.active .modal-content { transform: scale(1); opacity: 1; }
+        .video-box { width: 100%; aspect-ratio: 16/9; background: #eee; border-radius: 20px; margin: 25px 0; overflow: hidden; }
+        .video-box iframe { width: 100%; height: 100%; border: none; }
+        .close-btn { position: absolute; top: 30px; right: 30px; font-size: 2rem; cursor: pointer; line-height: 1; }
+
+        footer { text-align: center; padding: 60px; background: #2c3e50; color: white; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <nav id="navbar">
+        <a href="#" class="logo">VITALITY</a>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#nutrients">Nutrients</a></li>
+            <li><a href="#sdg">SDG 3</a></li>
+            <li><a href="#mealplan">Meal Plan</a></li>
+        </ul>
+    </nav>
+
+    <section id="home" class="hero">
+        <div class="reveal active">
+            <h1>Nutritional Balance</h1>
+            <p>Biomolecules like carbohydrates and proteins provide the energy and strength necessary for body recovery and the daily functions that sustain life.</p>
+            <div class="credits">
+                <span><strong>Sophia Al-andari</strong> Head</span>
+                <span><strong>Alyeska Ebreo</strong> Editor-in-Chief</span>
+                <span><strong>Eumico Castillo</strong> Associate Editor</span>
+                <span><strong>Phoebe Gonzalvo</strong> Creative Lead</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="nutrients">
+        <div class="reveal" style="text-align: center;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--color1);">The Power of Biomolecules</h2>
+            <p style="color: var(--color6);">Select a biomolecule to see a deep dive into its biological structure and importance.</p>
+        </div>
+        <div class="grid">
+            <div class="card reveal" onclick="openModal('carb-modal')">
+                <h3>Carbohydrates</h3>
+                <p>The body's primary fuel source. Not all carbs are equal—learn the difference between quick energy and sustained power.</p>
+                <p style="margin-top: 15px; font-weight: 600; color: var(--color1);">Click to Learn More →</p>
+            </div>
+            <div class="card reveal" onclick="openModal('protein-modal')">
+                <h3>Proteins</h3>
+                <p>The architectural foundation of life. Essential for everything from muscle growth to a resilient immune response.</p>
+                <p style="margin-top: 15px; font-weight: 600; color: var(--color1);">Click to Learn More →</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="sdg" style="background: var(--color5);">
+        <div class="reveal" style="text-align:center;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 3rem;">SDG 3: Good Health</h2>
+            <p style="max-width: 800px; margin: 20px auto;">Our project aligns with the United Nations goal to ensure healthy lives and promote well-being for all ages.</p>
+        </div>
+        <div class="grid">
+            <div class="card reveal">
+                <h4>Disease Prevention</h4>
+                <p>Proper carbohydrate intake prevents the fatigue that compromises the immune system, while proteins create antibodies to fight infection.</p>
+            </div>
+            <div class="card reveal">
+                <h4>Growth & Repair</h4>
+                <p>In adolescents, balanced nutrition ensures that tissue repair and hormonal balance are optimized for physical and mental potential.</p>
+            </div>
+            <div class="card reveal">
+                <h4>Health Literacy</h4>
+                <p>Education is the first step to prevention. Knowing how to choose affordable, nutrient-dense foods reduces lifestyle diseases like diabetes.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="mealplan">
+        <div class="reveal" style="text-align:center;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--color7);">Affordable Nutrition</h2>
+            <p>A balanced daily guide under <strong>Php 100 per meal</strong>.</p>
+        </div>
+        <div class="table-container reveal">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Meal</th>
+                        <th>Menu Items</th>
+                        <th>Nutrient Breakdown</th>
+                        <th>Allergy Alternative</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Breakfast</td>
+                        <td>Boiled Egg & Sinangag</td>
+                        <td>High-quality Protein & Glucose</td>
+                        <td>Tofu Scramble</td>
+                    </tr>
+                    <tr>
+                        <td>Lunch</td>
+                        <td>Munggo w/ Tinapa & Rice</td>
+                        <td>Plant Protein & High Fiber</td>
+                        <td>Munggo w/ Squash</td>
+                    </tr>
+                    <tr>
+                        <td>Dinner</td>
+                        <td>Steamed Fish & Kamote Leaves</td>
+                        <td>Omega-3 & Essential Vitamins</td>
+                        <td>Lean Chicken or Beans</td>
+                    </tr>
+                    <tr>
+                        <td>Snack</td>
+                        <td>Boiled Sweet Potato</td>
+                        <td>Complex Polysaccharides</td>
+                        <td>Banana or Corn</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <div id="carb-modal" class="modal" onclick="closeModal(event)">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('carb-modal').classList.remove('active')">&times;</span>
+            <h2 style="color: var(--color1); font-family: 'Playfair Display'; font-size: 2.5rem;">Carbohydrates Deep Dive</h2>
+            
+            <div class="video-box">
+                <iframe src="https://www.youtube.com/embed/wxzc_2c64lo" title="Carbohydrates Video" allowfullscreen></iframe>
+            </div>
+
+            <p><strong>Biological Breakdown:</strong> Carbohydrates are molecules consisting of carbon, hydrogen, and oxygen atoms. They are classified into <strong>Simple Carbs</strong> (Monosaccharides like glucose/fructose) and <strong>Complex Carbs</strong> (Polysaccharides like starch and fiber).</p>
+            <br>
+            <p><strong>The Impact:</strong> Simple carbs provide an immediate "spike" of energy, whereas complex carbs like brown rice take longer to digest, providing a steady stream of fuel for your brain and muscles.</p>
+            <p style="margin-top:20px; padding: 15px; background: #fff5f5; border-radius: 10px; color: #d9534f;">
+                ⚠️ <strong>Metabolic Risk:</strong> Chronic excess of simple sugars can lead to Insulin Resistance (Diabetes), while a severe deficiency leads to Ketosis and mental fatigue (brain fog).
+            </p>
+        </div>
+    </div>
+
+    <div id="protein-modal" class="modal" onclick="closeModal(event)">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('protein-modal').classList.remove('active')">&times;</span>
+            <h2 style="color: var(--color1); font-family: 'Playfair Display'; font-size: 2.5rem;">The Science of Proteins</h2>
+            
+            <div class="video-box">
+                <iframe src="https://www.youtube.com/embed/2RS6_KAnBvY" title="Protein Video" allowfullscreen></iframe>
+            </div>
+
+            <p><strong>Structural Levels:</strong> Proteins are made of amino acid chains connected by peptide bonds. They exist in four levels: <strong>Primary</strong> (linear sequence), <strong>Secondary</strong> (coils/folds), <strong>Tertiary</strong> (3D shape), and <strong>Quaternary</strong> (multiple clusters).</p>
+            <br>
+            <p><strong>Why they matter:</strong> They aren't just for muscles. Proteins act as <strong>Enzymes</strong> (catalysts for life), <strong>Hormones</strong> (messengers), and <strong>Antibodies</strong> (defense). Sources include fish, eggs, and plant-based options like mung beans and tofu.</p>
+            <p style="margin-top:20px; padding: 15px; background: #fff5f5; border-radius: 10px; color: #d9534f;">
+                ⚠️ <strong>Health Note:</strong> Over-consumption can strain the kidneys as they filter out nitrogen by-products. Deficiency leads to Muscle Atrophy and a weakened immune system.
+            </p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Vitality Education Project | St. Paul College of Makati</p>
+        <p style="font-size: 0.7rem; margin-top: 10px; opacity: 0.6;">Designed for Advocacy & Scientific Literacy</p>
+    </footer>
+
+    <script>
+        // Enhanced Scroll Reveal
+        const observerOptions = { threshold: 0.15 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Navigation Blur Effect on Scroll
+        window.onscroll = function() {
+            let nav = document.getElementById('navbar');
+            if (window.pageYOffset > 50) {
+                nav.style.padding = "10px 50px";
+                nav.style.background = "rgba(255, 255, 255, 0.95)";
+            } else {
+                nav.style.padding = "20px 50px";
+                nav.style.background = "rgba(255, 255, 255, 0.85)";
+            }
+        };
+
+        // Modal Logic
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.classList.add('active'); }, 10);
+            document.body.style.overflow = 'hidden'; // Stop background scroll
+        }
+
+        function closeModal(e) {
+            if (e.target.classList.contains('modal') || e.target.classList.contains('close-btn')) {
+                const modals = document.querySelectorAll('.modal');
+                modals.forEach(m => {
+                    m.classList.remove('active');
+                    setTimeout(() => { m.style.display = 'none'; }, 500);
+                });
+                document.body.style.overflow = 'auto';
+                
+                // Stop YouTube video playing when closed
+                const frames = document.querySelectorAll('iframe');
+                frames.forEach(f => {
+                    let src = f.src;
+                    f.src = src;
+                });
+            }
+        }
+    </script>
+</body>
+</html>
